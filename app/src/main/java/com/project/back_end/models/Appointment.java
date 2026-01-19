@@ -52,7 +52,7 @@ public class Appointment {
 //      - It uses LocalDateTime, which includes both the date and time for the appointment.
     @Future()
     @NotNull
-    private LocalDateTime appointmenTime;
+    private LocalDateTime appointmentTime;
     
 // 5. 'status' field:
 //    - Type: private int
@@ -72,7 +72,7 @@ public class Appointment {
 //      - It is used to get an estimated appointment end time for display purposes.
     @Transient
     private LocalDateTime getEndTime() {
-        return appointmenTime.plusHours(1);
+        return appointmetnTime.plusHours(1);
     }
 // 7. 'getAppointmentDate' method:
 //    - Type: private LocalDate
@@ -80,7 +80,7 @@ public class Appointment {
 //      - This method extracts only the date part from the appointmentTime field.
 //      - It returns a LocalDate object representing just the date (without the time) of the scheduled appointment.
     private LocalDate getAppointmentDate() {
-        return appointmenTime.toLocalDate();
+        return appointmentTime.toLocalDate();
     }
 // 8. 'getAppointmentTimeOnly' method:
 //    - Type: private LocalTime
@@ -88,7 +88,7 @@ public class Appointment {
 //      - This method extracts only the time part from the appointmentTime field.
 //      - It returns a LocalTime object representing just the time (without the date) of the scheduled appointment.
     private LocalTime getAppointmentTimeOnly() {
-        return appointmenTime.toLocalTime();
+        return appointmentTime.toLocalTime();
     }
 // 9. Constructor(s):
 //    - A no-argument constructor is implicitly provided by JPA for entity creation.
@@ -96,10 +96,10 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(Doctor doctor, Patient patient, LocalDateTime appointmenTime, int status) {
+    public Appointment(Doctor doctor, Patient patient, LocalDateTime appointmentTime, int status) {
         this.doctor = doctor;
         this.patient = patient;
-        this.appointmenTime = appointmenTime;
+        this.appointmentTime = appointmentTime;
         this.status = status;
     }
 // 10. Getters and Setters:
@@ -128,18 +128,18 @@ public class Appointment {
     }
 
     public LocalDateTime getAppointmentTime() {
-        return appointmenTime;
+        return appointmentTime;
     }
 
-    public void setAppointmentTime(LocalDateTime appointmenTime) {
-        this.appointmenTime = appointmenTime;
+    public void setAppointmentTime(LocalDateTime appointmentTime) {
+        this.appointmentTime = appointmentTime;
     }
 
     public int getStatus() {
         return status;
     }
 
-    public void setStatus() {
+    public void setStatus(int status) {
         this.status = status;
     }
 }
