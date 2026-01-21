@@ -1,5 +1,4 @@
-   
-function renderHeader() {
+   function renderHeader() {
     const headerDiv = document.getElementById("header");
     
     if(window.location.pathname.endsWith("/")) {
