@@ -1,20 +1,22 @@
 package com.project.back_end.controllers;
 
 import com.project.back_end.models.Doctor;
-import com.project.back_end.models.Login;
+import com.project.back_end.dto.Login;
 import com.project.back_end.services.DoctorService;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.appService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("${api.path}doctor")
 public class DoctorController {
 
     private final DoctorService doctorService;
-    private final Service service;
+    private final appService service;
 
-    public DoctorController(DoctorService doctorService, Service service) {
+    public DoctorController(DoctorService doctorService, appService service) {
         this.doctorService = doctorService;
         this.service = service;
     }

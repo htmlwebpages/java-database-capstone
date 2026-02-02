@@ -2,9 +2,11 @@ package com.project.back_end.controllers;
 
 import com.project.back_end.models.Appointment;
 import com.project.back_end.services.AppointmentService;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.appService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Map;
+
 
 @RestController
 @RequestMapping("/appointments")
@@ -12,9 +14,9 @@ public class AppointmentController {
 
 
     private final AppointmentService appointmentService;
-    private final Service service;
+    private final appService service;
 
-    public AppointmentController(AppointmentService appointmentService, Service service) {
+    public AppointmentController(AppointmentService appointmentService, appService service) {
         this.appointmentService = appointmentService;
         this.service = service;
     }

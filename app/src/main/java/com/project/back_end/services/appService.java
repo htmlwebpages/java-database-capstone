@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class Service {
+public class appService {
     private final TokenService tokenService;
     private final AdminRepository adminRepository;
     private final DoctorRepository doctorRepository;
@@ -19,7 +19,7 @@ public class Service {
     private final DoctorService doctorService;
     private final PatientService patientService;
 
-    public Service(TokenService tokenService, AdminRepository adminRepository,
+    public appService(TokenService tokenService, AdminRepository adminRepository,
                 DoctorRepository doctorRepository, PatientRepository patientRepository,
                 DoctorService doctorService,PatientService patientService) {
         this.tokenService = tokenService;
