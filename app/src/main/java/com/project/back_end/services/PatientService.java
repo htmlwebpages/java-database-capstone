@@ -155,4 +155,5 @@ public class PatientService {
             response.put("message", "Internal server error");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
- }
+    }
+}
