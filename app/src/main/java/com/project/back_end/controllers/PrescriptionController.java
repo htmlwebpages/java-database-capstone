@@ -33,7 +33,8 @@ public class PrescriptionController {
             return ResponseEntity.status(validation.getStatusCode())
                 .body(Map.of("message", validation.getBody().get("message")));
         }
-        appointmentService.updateAppointmentStatus(prescription.getAppointmentId());
+        appointmentService.changeStatus(1, prescription.getAppointmentId());
+
         prescriptionService.savePrescription(prescription);
         return ResponseEntity.status(201)
                 .body(Map.of("message", "Prescription saved successfully"));

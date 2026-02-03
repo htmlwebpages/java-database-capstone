@@ -32,7 +32,7 @@ public class AppointmentController {
             return ResponseEntity.status(validation.getStatusCode())
                 .body(Map.of("message", validation.getBody().get("message")));
         }
-        return appointmentService.getAppointment(date, patientName);
+        return ResponseEntity.ok(appointmentService.getAppointment(patientName, LocalDate.parse(date), token));
     }
 
     @PostMapping("/{token}")
@@ -50,7 +50,11 @@ public class AppointmentController {
             return ResponseEntity.badRequest()
                 .body(Map.of("message", "Appointment validation failed"));
         }
-        return appointmentService.bookAppointment(appointment);
+        int res = appointmentService.bookAppointment(appointment);
+        if (res == 1) {
+            return ResponseEntity.ok(Map.of("message", "Appointment booked successfully"));
+        }
+        return ResponseEntity.badRequest().body(Map.of("message", "Failed to book appointment"));
     }
 
     @PutMapping("/{token}")
@@ -76,6 +80,6 @@ public class AppointmentController {
             return ResponseEntity.status(validation.getStatusCode())
                 .body(Map.of("message", validation.getBody().get("message")));
         }
-        return appointmentService.cancelAppointment(id);
+        return appointmentService.cancelAppointment(id, token);
     }
 }

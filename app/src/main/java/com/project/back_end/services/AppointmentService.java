@@ -3,7 +3,7 @@ package com.project.back_end.services;
 import com.project.back_end.models.Appointment;
 import com.project.back_end.models.Doctor;
 import com.project.back_end.models.Patient;
-import com.project.back_end.services.Service;
+import com.project.back_end.services.appService;
 import com.project.back_end.repo.AppointmentRepository;
 import com.project.back_end.repo.DoctorRepository;
 import com.project.back_end.repo.PatientRepository;
@@ -24,13 +24,14 @@ public class AppointmentService {
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
     private final TokenService tokenService;
-    private final Service service;
+    private final appService service;
 
-    public AppointmentService(AppointmentRepository appointmentRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TokenService tokenService) {
+    public AppointmentService(AppointmentRepository appointmentRepository, PatientRepository patientRepository, DoctorRepository doctorRepository, TokenService tokenService, appService service) {
             this.appointmentRepository = appointmentRepository;
             this.patientRepository = patientRepository;
             this.doctorRepository = doctorRepository;
             this.tokenService = tokenService;
+            this.service = service;
     }
 
     @Transactional
@@ -47,16 +48,20 @@ public class AppointmentService {
     @Transactional
     public ResponseEntity<Map<String, String>> updateAppointment(Appointment appointment) {
         Map<String, String> response = new HashMap<>();
-
         Optional<Appointment> existing = appointmentRepository.findById(appointment.getId());
         if(existing.isEmpty()) {
             response.put("message", "Appointment not found.");
-            return ResponseEntity.badRequest.body(response);
+            return ResponseEntity.badRequest().body(response);
         }
 
-        Map<String, String> validationResult = service.validateAppointment(appointment);
-        if(!validationResult.isEmpty()) {
-            return ResponseEntity.badRequest.body(validationResult);
+        int validationResult = service.validateAppointment(appointment);
+        if (validationResult == -1) {
+            response.put("message", "Doctor not found");
+            return ResponseEntity.badRequest().body(response);
+        }
+        if (validationResult == 0) {
+            response.put("message", "Selected time slot is not available");
+            return ResponseEntity.badRequest().body(response);
         }
 
         appointmentRepository.save(appointment);
@@ -71,7 +76,7 @@ public class AppointmentService {
         Optional <Appointment> appointmentOpt = appointmentRepository.findById(id);
         if(appointmentOpt.isEmpty()) {
             response.put("message", "Appointment not found.");
-            return ResponseEntity.badRequest.body(response);
+            return ResponseEntity.badRequest().body(response);
         }
 
         Appointment appointment = appointmentOpt.get();
@@ -84,8 +89,14 @@ public class AppointmentService {
     @Transactional
     public Map<String, String> getAppointment(String pname, LocalDate date, String token) {
         Map<String, String> result = new HashMap<>();
+        String doctorEmail = tokenService.extractUser(token);
+        Doctor doctor = doctorRepository.findByEmail(doctorEmail).orElse(null);
+        if (doctor == null) {
+            result.put("message", "Doctor not found");
+            return result;
+        }
+        Long doctorId = doctor.getId();
 
-        Long doctorId = tokenService.extractUserId(token);
         LocalDateTime start = date.atStartOfDay();
         LocalDateTime end = date.atTime(23, 59, 59);
 
@@ -98,8 +109,7 @@ public class AppointmentService {
             appointments = appointmentRepository.findByDoctorIdAndAppointmentTimeBetween(doctorId, start, end);
         }
         result.put("appointments", appointments);
-        response.put("message", "Appointments fetched successfully");
-
+        result.put("message", "Appointments fetched successfully");
         return result;
     }
 

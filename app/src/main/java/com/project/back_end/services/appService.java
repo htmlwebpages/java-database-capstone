@@ -2,6 +2,7 @@ package com.project.back_end.services;
 
 import com.project.back_end.models.*;
 import com.project.back_end.repo.*;
+import com.project.back_end.dto.Login;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -108,7 +109,7 @@ public class appService {
 
     public ResponseEntity<Map<String, Object>> filterPatient(String condition, String name, String token) {
         Map<String, Object> response;
-        String email = tokenService.extractUser(token);
+        String email = tokenService.extractEmail(token);
         if (condition != null && name != null) {
             response = patientService.filterByDoctorAndCondition(email, name, condition);
         }
