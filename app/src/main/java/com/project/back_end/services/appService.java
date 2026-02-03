@@ -59,7 +59,7 @@ public class appService {
 
     public ResponseEntity<Map<String, Object>> filterDoctor(String name, String specialty, String time) {
         Map<String, Object> response = new HashMap<>();
-        List<Doctor> doctors = doctorService.filterDoctorsByNameSpecilityandTime(name, specialty, time);
+        List<Doctor> doctors = doctorService.filterDoctorsByNameSpecialtyandTime(name, specialty, time);
         response.put("doctors", doctors);
         return ResponseEntity.ok(response);
     }

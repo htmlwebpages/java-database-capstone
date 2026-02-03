@@ -72,8 +72,13 @@ public class DoctorService {
 
     public ResponseEntity<Map<String, String>> validateDoctor(Login login) {
         Map<String, String> response = new HashMap<>();
+        Optional<Doctor> doctorOpt = doctorRepository.findByEmail(login.getEmail());
+        if (doctorOpt.isEmpty()) {
+            response.put("message", "Invalid credentials");
+            return ResponseEntity.badRequest().body(response);
+        }
+        Doctor doctor = doctorOpt.get();
 
-        Doctor doctor = doctorRepository.findByEmail(login.getEmail());
         if (doctor == null || !doctor.getPassword().equals(login.getPassword())) {
             response.put("message", "Invalid credentials");
             return ResponseEntity.badRequest().body(response);
@@ -103,18 +108,18 @@ public class DoctorService {
 
     @Transactional
     public List<Doctor> filterDoctorByNameAndSpecialty(String name, String specialty) {
-        return doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specilty);
+        return doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
     }
 
     @Transactional
     public List<Doctor> filterDoctorByTimeAndSpecialty(String specialty, String amOrPm) {
-        List<Doctor> doctors = doctorRepository.findBySpecialtyIgnoreCase(specilty);
+        List<Doctor> doctors = doctorRepository.findBySpecialtyIgnoreCase(specialty);
         return filterDoctorByTime(doctors, amOrPm);
     }
 
     @Transactional
     public List<Doctor> filterDoctorBySpecialty(String specialty) {
-        return doctorRepository.findBySpecialtyIgnoreCase(specilty);
+        return doctorRepository.findBySpecialtyIgnoreCase(specialty);
     }
 
     @Transactional
