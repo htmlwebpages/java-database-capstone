@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class DoctorService {
@@ -48,32 +50,14 @@ public class DoctorService {
         return availableSlots;
     }
 
-    public int saveDoctor(Doctor doctor) {
-        try {
-            Doctor existing = doctorRepository.findByEmail(doctor.getEmail());
-            if (existing != null) {
-                return -1;
-            }
-            doctorRepository.save(doctor);
-            return 1;
-        }
-        catch (Exception e) {
-            return 0;
-        }
+    public ResponseEntity<Map<String, String>> saveDoctor(Doctor doctor) {
+        doctorRepository.save(doctor);
+        return ResponseEntity.ok(Map.of("message", "Doctor saved successfully"));
     }
 
-    public int updateDoctor(Doctor doctor) {
-        try {
-            Optional<Doctor> existing = doctorRepository.findById(doctor.getId());
-            if (existing.isEmpty()) {
-                return -1;
-            }
-            doctorRepository.save(doctor);
-            return 1;
-        }
-        catch (Exception e) {
-            return 0;
-        }
+    public ResponseEntity<Map<String, String>> updateDoctor(Doctor doctor) {
+        doctorRepository.save(doctor);
+        return ResponseEntity.ok(Map.of("message", "Doctor updated successfully"));
     }
 
     @Transactional
@@ -81,19 +65,9 @@ public class DoctorService {
         return doctorRepository.findAll();
     }
 
-    public int deleteDoctor(long id) {
-        try {
-            Optional<Doctor> doctor = doctorRepository.findById(id);
-            if (doctor.isEmpty()) {
-                return -1;
-            }
-            appointmentRepository.deleteAllByDoctorId(id);
-            doctorRepository.deleteById(id);
-            return 1;
-        }
-        catch (Exception e) {
-            return 0;
-        }
+    public ResponseEntity<Map<String, String>> deleteDoctor(Long id) {
+        doctorRepository.deleteById(id);
+        return ResponseEntity.ok(Map.of("message", "Doctor deleted successfully"));
     }
 
     public ResponseEntity<Map<String, String>> validateDoctor(Login login) {
@@ -105,75 +79,48 @@ public class DoctorService {
             return ResponseEntity.badRequest().body(response);
         }
 
-        String token = tokenService.generateToken(doctor.getId(), "DOCTOR");
+        String token = tokenService.generateToken(doctor.getEmail());
         response.put("token", token);
         return ResponseEntity.ok(response);
     }
 
     @Transactional
-    public Map<String, Object> findDoctorByName(String name) {
-        Map<String, Object> response = new HashMap<>();
+    public List<Doctor> findDoctorByName(String name) {
+        return doctorRepository.findByNameLike("%" + name + "%");
+    }
+
+    @Transactional
+    public List<Doctor> filterDoctorsByNameSpecialtyandTime(String name, String specialty, String amOrPm) {
+        List<Doctor> doctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
+        return filterDoctorByTime(doctors, amOrPm);
+    }
+
+    @Transactional
+    public List<Doctor> filterDoctorByNameAndTime(String name, String amOrPm) {
         List<Doctor> doctors = doctorRepository.findByNameLike("%" + name + "%");
-        response.put("doctors", doctors);
-        return response;
+        return filterDoctorByTime(doctors, amOrPm);
     }
 
     @Transactional
-    public Map<String, Object> filterDoctorsByNameSpecilityandTime(String name, String specialty, String amOrPm) {
-        List<Doctor> doctors =
-                doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
-        doctors = filterDoctorByTime(doctors, amOrPm);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("doctors", doctors);
-        return response;
+    public List<Doctor> filterDoctorByNameAndSpecialty(String name, String specialty) {
+        return doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specilty);
     }
 
     @Transactional
-    public Map<String, Object> filterDoctorByNameAndTime(String name, String amOrPm) {
-        List<Doctor> doctors = doctorRepository.findByNameLike("%" + name + "%");
-        doctors = filterDoctorByTime(doctors, amOrPm);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("doctors", doctors);
-        return response;
-    }
-
-    @Transactional
-    public Map<String, Object> filterDoctorByNameAndSpecility(String name, String specilty) {
-        Map<String, Object> response = new HashMap<>();
-        List<Doctor> doctors =
-                doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specilty);
-        response.put("doctors", doctors);
-        return response;
-    }
-
-    @Transactional
-    public Map<String, Object> filterDoctorByTimeAndSpecility(String specilty, String amOrPm) {
+    public List<Doctor> filterDoctorByTimeAndSpecialty(String specialty, String amOrPm) {
         List<Doctor> doctors = doctorRepository.findBySpecialtyIgnoreCase(specilty);
-        doctors = filterDoctorByTime(doctors, amOrPm);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("doctors", doctors);
-        return response;
+        return filterDoctorByTime(doctors, amOrPm);
     }
 
     @Transactional
-    public Map<String, Object> filterDoctorBySpecility(String specilty) {
-        Map<String, Object> response = new HashMap<>();
-        List<Doctor> doctors = doctorRepository.findBySpecialtyIgnoreCase(specilty);
-        response.put("doctors", doctors);
-        return response;
+    public List<Doctor> filterDoctorBySpecialty(String specialty) {
+        return doctorRepository.findBySpecialtyIgnoreCase(specilty);
     }
 
     @Transactional
-    public Map<String, Object> filterDoctorsByTime(String amOrPm) {
+    public List<Doctor> filterDoctorsByTime(String amOrPm) {
         List<Doctor> doctors = doctorRepository.findAll();
-        doctors = filterDoctorByTime(doctors, amOrPm);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("doctors", doctors);
-        return response;
+        return filterDoctorByTime(doctors, amOrPm);
     }
 
     private List<Doctor> filterDoctorByTime(List<Doctor> doctors, String amOrPm) {

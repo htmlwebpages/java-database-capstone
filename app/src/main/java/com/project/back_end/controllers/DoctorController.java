@@ -7,6 +7,8 @@ import com.project.back_end.services.appService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+import java.time.LocalDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @RestController
@@ -25,7 +27,7 @@ public class DoctorController {
     public ResponseEntity<Map<String, Object>> getDoctorAvailability(
             @PathVariable String user,
             @PathVariable Long doctorId,
-            @PathVariable String date,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @PathVariable String token) {
 
         ResponseEntity<Map<String, String>> validation = service.validateToken(token, user);
@@ -33,12 +35,12 @@ public class DoctorController {
             return ResponseEntity.status(validation.getStatusCode())
                 .body(Map.of("message", validation.getBody().get("message")));
         }
-        return doctorService.getDoctorAvailability(doctorId, date);
+        return ResponseEntity.ok(Map.of("availableSlots", doctorService.getDoctorAvailability(doctorId, date)));
     }
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getDoctor() {
-        return doctorService.getDoctors();
+        return ResponseEntity.ok(Map.of("doctors", doctorService.getDoctors()));
     }
 
     @PostMapping("/{token}")
@@ -88,6 +90,8 @@ public class DoctorController {
             @PathVariable String time,
             @PathVariable String speciality) {
 
-        return ResponseEntity.ok(service.filterDoctor(name, speciality, time));
+
+        Map<String, Object> response = service.filterDoctor(name, speciality, time);
+        return ResponseEntity.ok(response);
     }
 }

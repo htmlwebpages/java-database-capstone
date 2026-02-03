@@ -87,21 +87,19 @@ public class AppointmentService {
     }
 
     @Transactional
-    public Map<String, String> getAppointment(String pname, LocalDate date, String token) {
-        Map<String, String> result = new HashMap<>();
+    public Map<String, Object> getAppointment(String pname, LocalDate date, String token) {
+        Map<String, Object> result = new HashMap<>();
         String doctorEmail = tokenService.extractUser(token);
-        Doctor doctor = doctorRepository.findByEmail(doctorEmail).orElse(null);
+        Optional<Doctor> doctorOpt = doctorRepository.findByEmail(doctorEmail);
+        Doctor doctor = doctorOpt.orElse(null);
         if (doctor == null) {
             result.put("message", "Doctor not found");
             return result;
         }
         Long doctorId = doctor.getId();
-
         LocalDateTime start = date.atStartOfDay();
         LocalDateTime end = date.atTime(23, 59, 59);
-
         List<Appointment> appointments;
-
         if(pname != null && !pname.equalsIgnoreCase("null")) {
             appointments = appointmentRepository.findByDoctorIdAndPatient_NameContainingIgnoreCaseAndAppointmentTimeBetween(doctorId, pname, start, end);
         }

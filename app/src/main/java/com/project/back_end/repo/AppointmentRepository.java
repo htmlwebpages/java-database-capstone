@@ -65,4 +65,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             WHERE a.id = :id
     """)
     void updateStatus(int status, long id);
+
+    List<Appointment> findByPatientIdAndStatus(Long patientId, int status);
+
+    List<Appointment> findByPatientIdAndDoctorNameContainingIgnoreCase(Long patientId, String name);
+
+    List<Appointment> findByPatientIdAndDoctorNameContainingIgnoreCaseAndStatus(Long patientId, String name, int status);   
 }

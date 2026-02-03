@@ -35,16 +35,8 @@ public class PrescriptionService {
         }
     }
 
-    public ResponseEntity<Map<String, Object>> getPrescription(Long appointmentId) {
-        Map<String, Object> response = new HashMap<>();
-        try {
-            List<Prescription> prescriptions = prescriptionRepository.findByAppointmentId(appointmentId);
-            response.put("prescription", prescriptions);
-            return ResponseEntity.ok(response);
-        }
-        catch (Exception e) {
-            response.put("message", "Internal server error");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
+    public Prescription getPrescription(Long appointmentId) {
+        List<Prescription> prescriptions = prescriptionRepository.findByAppointmentId(appointmentId);
+        return prescriptions.isEmpty() ? null : prescriptions.get(0);
     }
 }

@@ -40,33 +40,25 @@ public class TokenService {
     }
 
     public String extractEmail(String token) {
-        return Jwts.parserBuilder()
-            .setSigningKey(getSigningKey()).build()
-            .parseClaimsJws(token).getBody()
-            .getSubject();
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
     }
 
     public ResponseEntity<Map<String, String>> validateToken(String token, String user) {
         try {
             String email = extractEmail(token);
-            boolean exists;
-
-            switch (user.toLowerCase()) {
-                case "admin":
-                    exists = adminRepository.findByUsername(email).isPresent();
-                    break;
-                case "doctor":
-                    exists = doctorRepository.findByEmail(email).isPresent();
-                    break;
-                case "patient":
-                    exists = patientRepository.findByEmail(email).isPresent();
-                    break;
-                default:
-                    exists = false;
-            }
+            boolean exists = switch (user.toLowerCase()) {
+                case "admin" -> adminRepository.findByUsername(email) != null;
+                case "doctor" -> doctorRepository.findByEmail(email) != null;
+                case "patient" -> patientRepository.findByEmail(email) != null;
+                default -> false;
+            };
             if (!exists) {
-                return ResponseEntity
-                        .status(HttpStatus.UNAUTHORIZED)
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Map.of("message", "Invalid token"));
             }
             return ResponseEntity.ok(Map.of("message", "Valid token"));
@@ -75,6 +67,10 @@ public class TokenService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Invalid or expired token"));
         }
+    }
+
+    public String extractUser(String token) {
+        return extractEmail(token);
     }
 
     public SecretKey getSigningKey() {

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class PatientService {
@@ -42,7 +43,12 @@ public class PatientService {
 
         try {
             String email = tokenService.extractEmail(token);
-            Patient patient = patientRepository.findByEmail(email);
+            Optional<Patient> patientOpt = patientRepository.findByEmail(email);
+            if (patientOpt.isEmpty()) {
+                response.put("message", "Patient not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            Patient patient = patientOpt.get();
             if (patient == null || !patient.getId().equals(id)) {
                 response.put("message", "Unauthorized access");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
@@ -142,7 +148,12 @@ public class PatientService {
         Map<String, Object> response = new HashMap<>();
         try {
             String email = tokenService.extractEmail(token);
-            Patient patient = patientRepository.findByEmail(email);
+            Optional<Patient> patientOpt = patientRepository.findByEmail(email);
+            if (patientOpt.isEmpty()) {
+                response.put("message", "Patient not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+            Patient patient = patientOpt.get();
             if (patient == null) {
                 response.put("message", "Patient not found");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);

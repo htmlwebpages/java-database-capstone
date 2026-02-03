@@ -6,6 +6,7 @@ import com.project.back_end.services.appService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+import java.time.LocalDate;
 
 
 @RestController
@@ -58,7 +59,7 @@ public class AppointmentController {
     }
 
     @PutMapping("/{token}")
-    public ResponseEntity<Map<String, Object>> updateAppointment(
+    public ResponseEntity<Map<String, String>> updateAppointment(
             @PathVariable String token,
             @RequestBody Appointment appointment) {
 
@@ -71,7 +72,7 @@ public class AppointmentController {
     }
 
     @DeleteMapping("/{id}/{token}")
-    public ResponseEntity<Map<String, Object>> cancelAppointment(
+    public ResponseEntity<Map<String, String>> cancelAppointment(
             @PathVariable Long id,
             @PathVariable String token) {
 

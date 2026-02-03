@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.time.LocalDate;
 
 @Service
 public class appService {
@@ -32,12 +33,7 @@ public class appService {
     }
 
     public ResponseEntity<Map<String, String>> validateToken(String token, String user) {
-        Map<String, String> response = new HashMap<>();
-        if (!tokenService.validateToken(token, user)) {
-            response.put("message", "Invalid or expired token");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
-        }
-        return ResponseEntity.ok(response);
+        return tokenService.validateToken(token, user);
     }
 
     public ResponseEntity<Map<String, String>> validateAdmin(Admin receivedAdmin) {
@@ -61,24 +57,27 @@ public class appService {
         }
     }
 
-    public Map<String, Object> filterDoctor(String name, String specialty, String time) {
+    public ResponseEntity<Map<String, Object>> filterDoctor(String name, String specialty, String time) {
         Map<String, Object> response = new HashMap<>();
         List<Doctor> doctors = doctorService.filterDoctorsByNameSpecilityandTime(name, specialty, time);
         response.put("doctors", doctors);
-        return response;
+        return ResponseEntity.ok(response);
     }
 
     public int validateAppointment(Appointment appointment) {
-        Optional<Doctor> doctorOpt = doctorRepository.findById(appointment.getDoctorId());
+        Doctor doctor = appointment.getDoctor();
+        if (doctor == null || doctor.getId() == null) {
+            return -1;
+        }
+        Optional<Doctor> doctorOpt = doctorRepository.findById(doctor.getId());
         if (doctorOpt.isEmpty()) {
             return -1;
         }
-        Doctor doctor = doctorOpt.get();
-        List<String> availableSlots = doctorService.getDoctorAvailability(doctor);
-        if (availableSlots.contains(appointment.getTime())) {
-            return 1;
-        }
-        return 0;
+        Long doctorId = doctorOpt.get().getId();
+        LocalDate date = appointment.getAppointmentTime().toLocalDate();
+        List<String> availableSlots = doctorService.getDoctorAvailability(doctorId, date);
+        String appointmentTime = appointment.getAppointmentTime().toLocalTime().toString();
+        return availableSlots.contains(appointmentTime) ? 1 : 0;
     }
 
     public boolean validatePatient(Patient patient) {
@@ -108,20 +107,31 @@ public class appService {
     }
 
     public ResponseEntity<Map<String, Object>> filterPatient(String condition, String name, String token) {
-        Map<String, Object> response;
         String email = tokenService.extractEmail(token);
+        Optional<Patient> patientOpt = patientRepository.findByEmail(email);
+        if (patientOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", "Unauthorized"));
+        }
+        Patient patient = patientOpt.get();
+        if (patient == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(Map.of("message", "Unauthorized"));
+        }
+        Long patientId = patient.getId();
+        ResponseEntity<Map<String, Object>> response;
         if (condition != null && name != null) {
-            response = patientService.filterByDoctorAndCondition(email, name, condition);
+            response = patientService.filterByDoctorAndCondition(condition, name, patientId);
         }
         else if (condition != null) {
-            response = patientService.filterByCondition(email, condition);
+            response = patientService.filterByCondition(condition, patientId);
         }
         else if (name != null) {
-            response = patientService.filterByDoctor(email, name);
+            response = patientService.filterByDoctor(name, patientId);
         }
         else {
-            response = patientService.getAllAppointments(email);
+            response = patientService.getPatientAppointment(patientId, token);
         }
-        return ResponseEntity.ok(response);
+        return response;
     }
 }

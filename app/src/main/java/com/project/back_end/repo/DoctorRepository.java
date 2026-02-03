@@ -6,11 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import com.project.back_end.models.Doctor;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
-    Doctor findByEmail(String email);
+    Optional<Doctor> findByEmail(String email);
+
 
     @Query("SELECT d FROM Doctor d WHERE d.name LIKE CONCAT('%', :name, '%')")
     List<Doctor> findByNameLike(String name);
@@ -22,5 +24,5 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     """)
     List<Doctor> findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(String name, String speciality);
 
-    List<Doctor> findBySpecialityIgnoreCase(String Speciality);
+    List<Doctor> findBySpecialtyIgnoreCase(String specialty);
 }
