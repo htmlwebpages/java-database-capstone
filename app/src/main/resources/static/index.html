@@ -5,9 +5,9 @@
     <head>
         <meta charset="UTF-8">
         <title>Smart Clinic Management System</title>
-        <link rel="icon" href="./assets/images/logo/logo.png"/>
-        <link rel="stylesheet" href="./assets/css/index.css">
-        <link rel="stylesheet" href="./assets/css/style.css">
+        <link rel="icon" href="assets/images/logo/logo.png"/>
+        <link rel="stylesheet" href="assets/css/index.css">
+        <link rel="stylesheet" href="assets/css/style.css">
         <script src="./js/util.js" defer></script>
         <script src="./js/render.js" defer></script>
         <script src="./js/components/header.js" defer></script>
@@ -20,9 +20,9 @@
                     <div id="header"></div>
                     <main class="main-content" id="mainContent">
                         <h2 id="roleHeading">Select Your Role</h2>
-                        <button id="adminBtn" onclick="selectRole('Admin')">Admin</button>
-                        <button id="doctorBtn" onclick="selectRole('Doctor')">Doctor</button>
-                        <button id="patientBtn" onclick="selectRole('Patient')">Patient</button>
+                        <button id="adminBtn" onclick="openModal('adminLogin')">Admin</button>
+                        <button id="doctorBtn" onclick="openModal('doctorLogin')">Doctor</button>
+                        <button id="patientBtn" onclick="selectRole('patient')">Patient</button>
                     </main>
                     <div id="footer"></div>
                 </div>

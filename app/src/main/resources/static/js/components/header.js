@@ -5,14 +5,14 @@
         localStorage.removeItem("userRole");
         localStorage.removeItem("token");
 
-        headerDiv.innerHTML = 
+        headerDiv.innerHTML = `
         <header class="header">
-            <div class="logo-section">
-                <img src="./assets/images/logo/logo.png" alt="Hospital CRM Logo" class="logo-img"/>
-                <span class="logo-title">Hospital CMS</span>
-            </div>
+        <div class="logo-section">
+            <img src="./assets/images/logo/logo.png" alt="Hospital CRM Logo" class="logo-img"/>
+            <span class="logo-title">Hospital CMS</span>
+        </div>
         </header>
-        ;
+        `;
         return;
     }
 

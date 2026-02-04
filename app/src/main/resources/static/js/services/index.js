@@ -1,5 +1,5 @@
-import { openModal } from "../js/components/modals.js";
-import { API_BASE_URL } from "../js/config/config.js";
+import { openModal } from "../components/modals.js";
+import { API_BASE_URL } from "../config/config.js";
 
 const ADMIN_API = API_BASE_URL + '/admin';
 const DOCTOR_API = API_BASE_URL + '/doctor/login';
@@ -72,3 +72,5 @@ window.doctorLoginHandler = async function () {
         alert("Something went wrong. Please try again!")
     }
 };
+
+window.openModal = openModal;
