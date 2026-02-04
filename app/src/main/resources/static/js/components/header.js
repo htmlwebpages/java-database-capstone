@@ -50,8 +50,8 @@
     }
     else if(role === "patient") {
         headerContent += `
-            <button id="patientLogin" class="adminBtn" onclick=""> Login </button>
-            <button id="patientSignup" class="adminBtn" onclick=""> SignUp </button>
+            <button id="patientLogin" class="adminBtn"> Login </button>
+            <button id="patientSignup" class="adminBtn"> SignUp </button>
         `;
     }
     else if(role === "loggedPatient") {
