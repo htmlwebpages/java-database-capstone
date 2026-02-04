@@ -95,8 +95,8 @@ public class DoctorService {
     }
 
     @Transactional
-    public List<Doctor> filterDoctorsByNameSpecialtyandTime(String name, String specialty, String amOrPm) {
-        List<Doctor> doctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
+    public List<Doctor> filterDoctorsByNameSpecialityandTime(String name, String speciality, String amOrPm) {
+        List<Doctor> doctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialityIgnoreCase(name, speciality);
         return filterDoctorByTime(doctors, amOrPm);
     }
 
@@ -107,19 +107,19 @@ public class DoctorService {
     }
 
     @Transactional
-    public List<Doctor> filterDoctorByNameAndSpecialty(String name, String specialty) {
-        return doctorRepository.findByNameContainingIgnoreCaseAndSpecialtyIgnoreCase(name, specialty);
+    public List<Doctor> filterDoctorByNameAndSpeciality(String name, String speciality) {
+        return doctorRepository.findByNameContainingIgnoreCaseAndSpecialityIgnoreCase(name, speciality);
     }
 
     @Transactional
-    public List<Doctor> filterDoctorByTimeAndSpecialty(String specialty, String amOrPm) {
-        List<Doctor> doctors = doctorRepository.findBySpecialtyIgnoreCase(specialty);
+    public List<Doctor> filterDoctorByTimeAndSpeciality(String speciality, String amOrPm) {
+        List<Doctor> doctors = doctorRepository.findBySpecialityIgnoreCase(speciality);
         return filterDoctorByTime(doctors, amOrPm);
     }
 
     @Transactional
-    public List<Doctor> filterDoctorBySpecialty(String specialty) {
-        return doctorRepository.findBySpecialtyIgnoreCase(specialty);
+    public List<Doctor> filterDoctorBySpeciality(String speciality) {
+        return doctorRepository.findBySpecialityIgnoreCase(speciality);
     }
 
     @Transactional

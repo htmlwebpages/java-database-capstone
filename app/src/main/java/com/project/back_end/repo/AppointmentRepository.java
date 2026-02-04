@@ -15,7 +15,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("""
             SELECT a from Appointment a
             LEFT JOIN FETCH a.doctor d
-            LEFT JOIN FETCH d.availability
+            LEFT JOIN FETCH d.availableTimes
             WHERE d.id = :doctorId
             AND a.appointmentTime BETWEEN :start AND :end
     """)
