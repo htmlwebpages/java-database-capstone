@@ -8,6 +8,7 @@ import com.project.back_end.repo.DoctorRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -77,9 +78,10 @@ public class DoctorService {
             response.put("message", "Invalid credentials");
             return ResponseEntity.badRequest().body(response);
         }
+    
         Doctor doctor = doctorOpt.get();
-
-        if (doctor == null || !doctor.getPassword().equals(login.getPassword())) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if (!encoder.matches(login.getPassword(), doctor.getPassword())) {
             response.put("message", "Invalid credentials");
             return ResponseEntity.badRequest().body(response);
         }
@@ -88,6 +90,7 @@ public class DoctorService {
         response.put("token", token);
         return ResponseEntity.ok(response);
     }
+    
 
     @Transactional
     public List<Doctor> findDoctorByName(String name) {

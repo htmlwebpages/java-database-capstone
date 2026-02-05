@@ -21,15 +21,15 @@ window.onload = function () {
 
 window.adminLoginHandler = async function () {
     try {
-        const username = document.getElementById("adminUsername").value;
-        const password = document.getElementById("adminPassword").value;
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
         
         const admin = {username, password};
 
         const response = await fetch(ADMIN_API, {
             method: 'POST',
-            headers: { "Content-Type": "application.json"},
-            body: JSON.stringify(data),
+            headers: { "Content-Type": "application/json"},
+            body: JSON.stringify(admin),
         });
 
         if(response.ok) {
@@ -42,21 +42,22 @@ window.adminLoginHandler = async function () {
         }
     } 
     catch (error) {
-        alert("Something went wrong. Please try again!")
+        console.error("Admin login failed:", error);
+        alert("Something went wrong. Please try again!");
     }
 };
 
 window.doctorLoginHandler = async function () {
     try {
-        const username = document.getElementById("doctorUsername").value;
-        const password = document.getElementById("doctorPassword").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-        const doctor = {username, password};
+        const doctor = {email, password};
 
         const response = await fetch(DOCTOR_API, {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify(data),
+            body: JSON.stringify(doctor),
         });
 
         if(response.ok) {
@@ -69,7 +70,8 @@ window.doctorLoginHandler = async function () {
         }
     }
     catch(error) {
-        alert("Something went wrong. Please try again!")
+        console.error("Doctor login failed:", error);
+        alert("Something went wrong. Please try again!");
     }
 };
 

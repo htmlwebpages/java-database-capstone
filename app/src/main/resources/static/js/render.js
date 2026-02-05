@@ -26,3 +26,5 @@ function renderContent() {
     return;
   }
 }
+
+window.selectRole = selectRole;
