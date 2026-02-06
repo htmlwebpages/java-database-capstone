@@ -2,7 +2,7 @@
 
 
  <!DOCTYPE html>
- <html lang="en" xmsl:th="http://www.thymeleaf.org">
+ <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
         <title>Admiin Dashboard</title>
@@ -20,12 +20,12 @@
                 <div id="header"></div>
                 <main class="main-content">
                     <input type="text" id="searchBar" placeholder="Search by doctor name"/>
-                    <select>
+                    <select id="filterTime">
                         <option value="">Sort by time</option>
                         <option value="AM">AM</option>
                         <option value="PM">PM</option>
                     </select>
-                    <select>
+                    <select id="filterSpeciality">
                         <option value="">Filterby speciality</option>
                         <option value="Cardiologist">Cardiologist</option>
                         <option value="Neurologist">Neurologist</option>
@@ -41,7 +41,7 @@
             <span id="closeModal" class="close">&times;</span>
             <div id="modal-body"></div>
         </div>
-        <script type="module" src="../js/adminDashboard.js" defer></script>
-        <script type="module" src="../js/components/doctorCard.js" defer></script>
+        <script type="module" src="@{/js/adminDashboard.js}" defer></script>
+        <script type="module" src="@{/js/components/doctorCard.js}" defer></script>
     </body>
  </html><

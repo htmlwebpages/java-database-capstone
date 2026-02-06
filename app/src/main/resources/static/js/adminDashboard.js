@@ -51,11 +51,11 @@ async function filterDoctorsOnChange() {
 }
 
 window.adminAddDoctor = async function () {
-    const name = document.getElementById("docName").value;
-    const email = document.getElementById("docEmail").value;
-    const phone = document.getElementById("docPhone").value;
-    const password = document.getElementById("docPassword").value;
-    const speciality = document.getElementById("docSpeciality").value;
+    const name = document.getElementById("doctorName").value;
+    const email = document.getElementById("doctorEmail").value;
+    const phone = document.getElementById("doctorPhone").value;
+    const password = document.getElementById("doctorPassword").value;
+    const speciality = document.getElementById("specialization").value;
 
     const availability = [];
     document.querySelectorAll("input[name='availability']:checked")

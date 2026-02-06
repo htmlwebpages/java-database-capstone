@@ -1,6 +1,6 @@
-import { showBookingOverlay } from "./js/loggedPatient.js";
-import { deleteDoctor } from "./js/services/doctorServices.js";
-import { getPatientData } from "./js/services/patientServices.js";
+import { showBookingOverlay } from "../loggedPatient.js";
+import { deleteDoctor } from "../services/doctorServices.js";
+import { getPatientData } from "../services/patientServices.js";
 
 export function createDoctorCard(doctor) {
     const card = document.createElement("div");
@@ -29,7 +29,7 @@ export function createDoctorCard(doctor) {
     infoDiv.appendChild(availability);
 
     const actionsDiv = document.createElement("div");
-    actionsDiv.classList.add(card-actions);
+    actionsDiv.classList.add("card-actions");
 
     if(role === "admin") {
         const removeBtn = document.createElement("button");
