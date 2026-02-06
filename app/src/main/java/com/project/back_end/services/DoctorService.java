@@ -63,7 +63,13 @@ public class DoctorService {
 
     @Transactional
     public List<Doctor> getDoctors() {
-        return doctorRepository.findAll();
+        List<Doctor> doctors = doctorRepository.findAll();
+        doctors.forEach(d -> {
+            if (d.getAvailableTimes() == null) {
+                d.setAvailableTimes(new ArrayList<>());
+            }
+        });
+        return doctors;
     }
 
     public ResponseEntity<Map<String, String>> deleteDoctor(Long id) {
@@ -132,9 +138,18 @@ public class DoctorService {
     }
 
     private List<Doctor> filterDoctorByTime(List<Doctor> doctors, String amOrPm) {
-        return doctors.stream()
-                .filter(d -> d.getAvailableTimes().stream()
-                .anyMatch(t -> t.toUpperCase().contains(amOrPm.toUpperCase()))
-                ).collect(Collectors.toList());
+    if (amOrPm == null || amOrPm.equalsIgnoreCase("all")) {
+        return doctors;
     }
+
+    return doctors.stream()
+        .filter(d -> {
+            List<String> times = d.getAvailableTimes();
+            if (times == null) return false;
+
+            return times.stream()
+                .anyMatch(t -> t.toUpperCase().contains(amOrPm.toUpperCase()));
+        })
+        .collect(Collectors.toList());
+}
 }
