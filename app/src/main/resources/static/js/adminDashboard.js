@@ -4,16 +4,33 @@ import { createDoctorCard } from "../js/components/doctorCard.js";
 
 window.onload = function () {
     loadDoctorCards();
+    document.getElementById("searchBar")?.addEventListener("input", filterDoctorsOnChange);
+    document.getElementById("filterTime")?.addEventListener("change", filterDoctorsOnChange);
+    document.getElementById("filterSpeciality")?.addEventListener("change", filterDoctorsOnChange);
 };
 
 async function loadDoctorCards() {
     try {
-        const doctors = await getDoctors();
-        renderDoctorCards(doctors);
+      const doctors = await getDoctors();
+  
+      const contentDiv = document.getElementById("content");
+      contentDiv.innerHTML = "";
+  
+      if (!Array.isArray(doctors) || doctors.length === 0) {
+        contentDiv.innerHTML = "<p>No doctors found.</p>";
+        return;
+      }
+  
+      doctors.forEach(doctor => {
+        const card = createDoctorCard(doctor);
+        contentDiv.appendChild(card);
+      });
+  
     } catch (error) {
-        console.error("Error loading doctors", error);
+      console.error("Failed to load doctors:", error);
     }
-}
+  }
+  
 
 function renderDoctorCards(doctors = []) {
     const contentDiv = document.getElementById("content");
@@ -32,17 +49,13 @@ function renderDoctorCards(doctors = []) {
     });
 }
 
-document.getElementById("searchBar")?.addEventListener("input", filterDoctorsOnChange);
-document.getElementById("filterTime")?.addEventListener("change", filterDoctorsOnChange);
-document.getElementById("filterSpeciality")?.addEventListener("change", filterDoctorsOnChange);
-
 async function filterDoctorsOnChange() {
     try {
         const name = document.getElementById("searchBar")?.value || null;
         const time = document.getElementById("filterTime")?.value || null;
         const speciality = document.getElementById("filterSpeciality")?.value || null;
 
-        const doctors = await filterDoctors(name, time, speciality);
+        const doctors = await filterDoctors(name, speciality, time);
         renderDoctorCards(doctors);
     } catch (error) {
         alert("Error filtering doctors");
@@ -80,3 +93,5 @@ window.adminAddDoctor = async function () {
         console.error(error);
     }
 };
+
+window.adminAddDoctor = adminAddDoctor;

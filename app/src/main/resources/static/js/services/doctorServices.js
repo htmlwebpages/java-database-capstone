@@ -60,23 +60,14 @@ export async function saveDoctor(doctor, token) {
 }
 
 export async function filterDoctors(name, time, speciality) {
-    try {
-        const response = await fetch(`${DOCTOR_API}/filter/${name}/${time}/${speciality}`);
-        if(response.ok) {
-            const data = await response.json();
-            return data;
-        }
-        else{
-            console.error("Failed to filter doctors.");
-            return {
-                doctors: []
-            };
-        }
-    }
-    catch (error) {
-        alert("Something went wrong while filtering the doctors!");
-        return {
-            doctors: []
-        }
-    }
+    const safeName = name || "all";
+    const safeTime = time || "all";
+    const safeSpeciality = speciality || "all";
+
+    const response = await fetch(
+        `${DOCTOR_API}/filter/${safeName}/${safeTime}/${safeSpeciality}`
+    );
+
+    const data = await response.json();
+    return data.doctors;
 }

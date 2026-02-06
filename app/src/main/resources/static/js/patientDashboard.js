@@ -41,18 +41,18 @@ function loadDoctorCards() {
 
 document.getElementById("searchBar").addEventListener("input", filterDoctorsOnChange);
 document.getElementById("filterTime").addEventListener("change", filterDoctorsOnChange);
-document.getElementById("filterSpecialty").addEventListener("change", filterDoctorsOnChange);
+document.getElementById("filterSpeciality").addEventListener("change", filterDoctorsOnChange);
 
 function filterDoctorsOnChange() {
     const searchBar = document.getElementById("searchBar").value.trim();
     const filterTime = document.getElementById("filterTime").value;
-    const filterSpecialty = document.getElementById("filterSpecialty").value;
+    const filterSpeciality = document.getElementById("filterSpeciality").value;
 
     const name = searchBar.length > 0 ? searchBar : null;
     const time = filterTime.length > 0 ? filterTime : null;
-    const specialty = filterSpecialty.length > 0 ? filterSpecialty : null;
+    const speciality = filterSpeciality.length > 0 ? filterSpeciality : null;
 
-    filterDoctors(name, time, specialty).then(response => {
+    filterDoctors(name, time, speciality).then(response => {
         const doctors = response.doctors;
         const contentDiv = document.getElementById("content");
         contentDiv.innerHTML = "";

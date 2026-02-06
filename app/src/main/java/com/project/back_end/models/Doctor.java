@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -84,7 +85,7 @@ public class Doctor {
 //      - Each time slot is represented as a string (e.g., "09:00-10:00", "10:00-11:00").
 //      - The @ElementCollection annotation ensures that the list of time slots is stored as a separate collection in the database.
     @ElementCollection
-    private List<String> availableTimes;
+    private List<String> availableTimes = new ArrayList<>();
 
     public Doctor() {
     }
