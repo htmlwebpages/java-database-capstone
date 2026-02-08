@@ -103,11 +103,18 @@ public class DoctorService {
         return doctorRepository.findByNameLike("%" + name + "%");
     }
 
+
     @Transactional
     public List<Doctor> filterDoctorsByNameSpecialityandTime(String name, String speciality, String amOrPm) {
-        List<Doctor> doctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialityIgnoreCase(name, speciality);
-        return filterDoctorByTime(doctors, amOrPm);
+        List<Doctor> doctors;
+        if (name == null || name.equalsIgnoreCase("null") || name.isBlank()) {
+            doctors = doctorRepository.findBySpecialityIgnoreCase(speciality);
+        }
+        else {
+            doctors = doctorRepository.findByNameContainingIgnoreCaseAndSpecialityIgnoreCase(name, speciality);
     }
+    return filterDoctorByTime(doctors, amOrPm);
+}
 
     @Transactional
     public List<Doctor> filterDoctorByNameAndTime(String name, String amOrPm) {
